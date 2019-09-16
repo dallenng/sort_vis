@@ -1,2 +1,2 @@
 # sort_vis
-A terminal sort visualizer written in Rust.
+A sort visualizer written in Rust with ggez.
