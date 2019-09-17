@@ -1,7 +1,9 @@
-use ggez::graphics;
 use ggez::graphics::{DrawMode, Mesh, Rect};
 use ggez::nalgebra;
 use ggez::Context;
+use ggez::{graphics, GameError};
+use std::thread;
+use std::time::Duration;
 
 pub struct IterableSortVec {
     vec: Vec<u32>,
@@ -23,13 +25,18 @@ impl Iterator for IterableSortVec {
     type Item = Vec<u32>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        unimplemented!()
+        self.vec.swap(100, 300);
+        Some(self.vec.clone())
     }
 }
 
 impl ggez::event::EventHandler for IterableSortVec {
     fn update(&mut self, _ctx: &mut Context) -> ggez::GameResult {
-        Ok(())
+        thread::sleep(Duration::from_millis(500));
+        match self.next() {
+            None => Err(GameError::EventLoopError("no value".to_string())),
+            Some(_) => Ok(()),
+        }
     }
 
     fn draw(&mut self, ctx: &mut Context) -> ggez::GameResult {
@@ -47,9 +54,6 @@ impl ggez::event::EventHandler for IterableSortVec {
                 rect_height,
             );
             let drawable = Mesh::new_rectangle(ctx, DrawMode::fill(), rect, (255, 0, 255).into())?;
-            if i == self.vec.len() - 1 {
-                println!("{:#?}", drawable);
-            }
 
             graphics::draw(ctx, &drawable, (nalgebra::Point2::new(0.0, 0.0),))?;
         }
