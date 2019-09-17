@@ -1,12 +1,14 @@
 use ggez::graphics::{DrawMode, Mesh, Rect};
 use ggez::nalgebra;
 use ggez::Context;
-use ggez::{graphics, GameError};
-use std::thread;
-use std::time::Duration;
+use ggez::graphics;
+use rand;
+use rand::distributions::{Uniform, Distribution};
+use rand::thread_rng;
 
 pub struct IterableSortVec {
     vec: Vec<u32>,
+    rand: Uniform<usize>,
 }
 
 impl IterableSortVec {
@@ -17,26 +19,16 @@ impl IterableSortVec {
             vec.push(i);
         }
 
-        Self { vec }
-    }
-}
+        let rand = Uniform::new(0, vec.len());
 
-impl Iterator for IterableSortVec {
-    type Item = Vec<u32>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.vec.swap(100, 300);
-        Some(self.vec.clone())
+        Self { vec, rand }
     }
 }
 
 impl ggez::event::EventHandler for IterableSortVec {
     fn update(&mut self, _ctx: &mut Context) -> ggez::GameResult {
-        thread::sleep(Duration::from_millis(500));
-        match self.next() {
-            None => Err(GameError::EventLoopError("no value".to_string())),
-            Some(_) => Ok(()),
-        }
+        self.vec.swap(self.rand.sample(&mut thread_rng()), self.rand.sample(&mut thread_rng()));
+        Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> ggez::GameResult {
@@ -55,7 +47,7 @@ impl ggez::event::EventHandler for IterableSortVec {
             );
             let drawable = Mesh::new_rectangle(ctx, DrawMode::fill(), rect, (255, 0, 255).into())?;
 
-            graphics::draw(ctx, &drawable, (nalgebra::Point2::new(0.0, 0.0),))?;
+            graphics::draw(ctx, &drawable, (nalgebra::Point2::new(0.0, 0.0), ))?;
         }
 
         graphics::present(ctx)

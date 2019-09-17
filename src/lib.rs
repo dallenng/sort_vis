@@ -26,6 +26,6 @@ pub fn run(_config: Config) -> ggez::GameResult {
     };
     let cb = ggez::ContextBuilder::new("sort_vis", "dallenng").window_mode(mode);
     let (ctx, event_loop) = &mut cb.build()?;
-    let state = &mut state::IterableSortVec::new(1_000);
+    let state = &mut state::IterableSortVec::new(700);
     ggez::event::run(ctx, event_loop, state)
 }
