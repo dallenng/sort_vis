@@ -5,3 +5,4 @@ pub trait Sort {
 }
 
 pub mod bubble;
+pub mod bogosort;

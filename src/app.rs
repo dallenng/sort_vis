@@ -1,11 +1,11 @@
 use crate::array::Array;
-use crate::sort::bubble::Bubble;
+use crate::sort::bogosort::Bogosort;
 use crate::sort::Sort;
 use crate::state::{SharedState, State};
 use ggez::{Context, GameError};
 use std::thread;
 
-const ARRAY_SIZE: u32 = 100;
+const ARRAY_SIZE: u32 = 5;
 
 pub struct App {
     state: SharedState,
@@ -21,7 +21,7 @@ impl App {
             .spawn(move || {
                 let array = Array::new(sort_state);
                 array.wait(1000);
-                Bubble::sort(array);
+                Bogosort::sort(array);
             })
             .unwrap();
 
