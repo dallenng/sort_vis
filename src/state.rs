@@ -11,7 +11,7 @@ pub struct State {
 pub struct SharedState(Arc<Mutex<State>>);
 
 impl State {
-    pub fn new(size: u32) -> Self {
+    pub fn new(size: usize) -> Self {
         let mut array: Vec<_> = (1..=size).collect();
         let mut array: Vec<_> = array
             .iter_mut()

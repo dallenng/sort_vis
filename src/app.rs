@@ -1,13 +1,11 @@
 use crate::array::Array;
-use crate::sort::bubble::Bubble;
-use crate::sort::Sort;
 use crate::state::{SharedState, State};
 use ggez::graphics::{Color, DrawParam, Rect};
 use ggez::{Context, GameError};
 use std::thread;
 use std::time::Duration;
 
-const ARRAY_SIZE: u32 = 100;
+const ARRAY_SIZE: usize = 100;
 const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.0, 1.0);
 const RECTANGLE_COLOR: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 
@@ -19,7 +17,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> Self {
+    pub fn new(sort: fn(Array)) -> Self {
         let state = SharedState::new(State::new(ARRAY_SIZE));
         let sort_state = state.clone();
         let sort_thread = thread::Builder::new()
@@ -27,7 +25,7 @@ impl App {
             .spawn(move || {
                 let array = Array::new(sort_state);
                 array.wait(Duration::from_secs(1).as_micros() as u64);
-                Bubble::sort(array);
+                sort(array);
             })
             .unwrap();
 
