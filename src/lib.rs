@@ -12,20 +12,29 @@ mod state;
 
 pub struct Config {
     pub sort_function: fn(Array),
+    pub array_size: usize,
 }
 
 impl Config {
     pub fn new(mut args: Args) -> Result<Self, &'static str> {
         args.next();
+
         let sort_function = match args.next() {
-            Some(arg) => match all_sort_functions().get(arg.as_str()) {
-                Some(sort) => *sort,
-                None => bubble_sort,
-            },
+            Some(arg) => *all_sort_functions()
+                .get(arg.as_str())
+                .unwrap_or(&(bubble_sort as fn(Array))),
             None => bubble_sort,
         };
 
-        Ok(Self { sort_function })
+        let array_size = match args.next() {
+            Some(arg) => arg.parse().unwrap_or(100),
+            None => 100,
+        };
+
+        Ok(Self {
+            sort_function,
+            array_size,
+        })
     }
 }
 
@@ -35,6 +44,6 @@ pub fn run(config: Config) -> ggez::GameResult {
     mode.resizable = true;
     let cb = ggez::ContextBuilder::new("sort_vis", "dallenng").window_mode(mode);
     let (ctx, event_loop) = &mut cb.build()?;
-    let state = &mut App::new(config.sort_function);
+    let state = &mut App::new(config.sort_function, config.array_size);
     ggez::event::run(ctx, event_loop, state)
 }

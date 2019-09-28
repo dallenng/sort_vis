@@ -5,7 +5,6 @@ use ggez::{Context, GameError};
 use std::thread;
 use std::time::Duration;
 
-const ARRAY_SIZE: usize = 100;
 const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.0, 1.0);
 const RECTANGLE_COLOR: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 
@@ -17,8 +16,8 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(sort: fn(Array)) -> Self {
-        let state = SharedState::new(State::new(ARRAY_SIZE));
+    pub fn new(sort: fn(Array), size: usize) -> Self {
+        let state = SharedState::new(State::new(size));
         let sort_state = state.clone();
         let sort_thread = thread::Builder::new()
             .name(String::from("sort"))
