@@ -4,5 +4,5 @@ pub trait Sort {
     fn sort(array: Array);
 }
 
-pub mod bubble;
 pub mod bogosort;
+pub mod bubble;

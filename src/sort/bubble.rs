@@ -13,7 +13,7 @@ impl Sort for Bubble {
             for i in 0..len {
                 if array.get(i) > array.get(i + 1) {
                     array.swap(i, i + 1);
-                    array.wait(1);
+                    array.wait(30);
                     sorted = false;
                 };
             }

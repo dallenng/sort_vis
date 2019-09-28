@@ -1,8 +1,8 @@
 use crate::state::SharedState;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use std::thread;
 use std::time::Duration;
-use rand::thread_rng;
-use rand::seq::SliceRandom;
 
 pub struct Array(SharedState);
 
@@ -11,11 +11,11 @@ impl Array {
         Self(state)
     }
 
-    pub fn get(&self, index: usize) -> u32 {
+    pub fn get(&self, index: usize) -> f32 {
         self.0.get().array[index]
     }
 
-    pub fn set(&self, index: usize, val: u32) {
+    pub fn set(&self, index: usize, val: f32) {
         self.0.get().array[index] = val;
     }
 
@@ -42,7 +42,7 @@ impl Array {
         self.0.get().array.shuffle(&mut thread_rng())
     }
 
-    pub fn wait(&self, ms: u64) {
-        thread::sleep(Duration::from_millis(ms));
+    pub fn wait(&self, us: u64) {
+        thread::sleep(Duration::from_micros(us));
     }
 }

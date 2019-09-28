@@ -1,14 +1,20 @@
 use crate::array::Array;
-use crate::sort::bogosort::Bogosort;
+use crate::sort::bubble::Bubble;
 use crate::sort::Sort;
 use crate::state::{SharedState, State};
+use ggez::graphics::{Color, DrawParam, Rect};
 use ggez::{Context, GameError};
 use std::thread;
+use std::time::Duration;
 
-const ARRAY_SIZE: u32 = 5;
+const ARRAY_SIZE: u32 = 100;
+const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.0, 1.0);
+const RECTANGLE_COLOR: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 
 pub struct App {
     state: SharedState,
+    rectangle: Rect,
+    param: DrawParam,
     sort_thread: thread::JoinHandle<()>,
 }
 
@@ -20,12 +26,20 @@ impl App {
             .name(String::from("sort"))
             .spawn(move || {
                 let array = Array::new(sort_state);
-                array.wait(1000);
-                Bogosort::sort(array);
+                array.wait(Duration::from_secs(1).as_micros() as u64);
+                Bubble::sort(array);
             })
             .unwrap();
 
-        Self { state, sort_thread }
+        let rectangle = Rect::new_i32(0, 0, 1, 1);
+        let param = DrawParam::default();
+
+        Self {
+            state,
+            sort_thread,
+            rectangle,
+            param,
+        }
     }
 }
 
@@ -36,7 +50,7 @@ impl ggez::event::EventHandler for App {
 
     fn draw(&mut self, ctx: &mut Context) -> Result<(), GameError> {
         use ggez::graphics::*;
-        clear(ctx, Color::new(0.0, 0.0, 0.0, 1.0));
+        clear(ctx, CLEAR_COLOR);
 
         let (window_width, window_height) = drawable_size(ctx);
 
@@ -45,19 +59,20 @@ impl ggez::event::EventHandler for App {
         let len = array.len() as f32;
 
         let rect_width = window_width / len;
-        let param = DrawParam::default();
-        let rect_color = Color::new(1.0, 0.0, 0.0, 1.0);
+        let mesh =
+            Mesh::new_rectangle(ctx, DrawMode::fill(), self.rectangle, RECTANGLE_COLOR).unwrap();
 
-        for (i, val) in array.iter().enumerate() {
-            let rect_height = (*val as f32) * window_height / len;
-            let rect = Rect::new(
-                (i as f32) * rect_width,
-                window_height - rect_height,
-                rect_width,
-                rect_height,
-            );
-            let mesh = Mesh::new_rectangle(ctx, DrawMode::fill(), rect, rect_color).unwrap();
-            draw(ctx, &mesh, param).unwrap();
+        self.param.dest.x = 0.0;
+        self.param.scale.x = rect_width;
+
+        for val in array {
+            let rect_height = *val * window_height;
+            self.param.dest.y = window_height - rect_height;
+            self.param.scale.y = rect_height;
+
+            draw(ctx, &mesh, self.param).unwrap();
+
+            self.param.dest.x += rect_width;
         }
 
         present(ctx)

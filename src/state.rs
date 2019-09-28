@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 
 #[derive(Debug)]
 pub struct State {
-    pub array: Vec<u32>,
+    pub array: Vec<f32>,
 }
 
 #[derive(Debug, Clone)]
@@ -12,7 +12,12 @@ pub struct SharedState(Arc<Mutex<State>>);
 
 impl State {
     pub fn new(size: u32) -> Self {
-        let mut array: Vec<_> = (0..size).collect();
+        let mut array: Vec<_> = (1..=size).collect();
+        let mut array: Vec<_> = array
+            .iter_mut()
+            .map(|int| (*int as f32) / (size as f32))
+            .collect();
+
         array.shuffle(&mut thread_rng());
         Self { array }
     }
