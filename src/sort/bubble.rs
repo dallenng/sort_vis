@@ -1,4 +1,5 @@
 use crate::array::Array;
+use std::time::Duration;
 
 pub fn bubble_sort(array: Array) {
     let mut len = array.len() - 1;
@@ -11,7 +12,7 @@ pub fn bubble_sort(array: Array) {
                 array.swap(i, i + 1);
                 sorted = false;
             };
-            array.wait(50);
+            array.wait(Duration::from_millis(10));
         }
         len -= 1;
     }

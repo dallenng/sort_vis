@@ -27,8 +27,8 @@ impl Config {
         };
 
         let array_size = match args.next() {
-            Some(arg) => arg.parse().unwrap_or(100),
-            None => 100,
+            Some(arg) => arg.parse().unwrap_or(50),
+            None => 50,
         };
 
         Ok(Self {

@@ -42,7 +42,7 @@ impl Array {
         self.0.get().array.shuffle(&mut thread_rng())
     }
 
-    pub fn wait(&self, us: u64) {
-        thread::sleep(Duration::from_micros(us));
+    pub fn wait(&self, duration: Duration) {
+        thread::sleep(duration);
     }
 }

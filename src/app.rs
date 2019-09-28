@@ -23,7 +23,7 @@ impl App {
             .name(String::from("sort"))
             .spawn(move || {
                 let array = Array::new(sort_state);
-                array.wait(Duration::from_secs(1).as_micros() as u64);
+                array.wait(Duration::from_secs(1));
                 sort(array);
             })
             .unwrap();
