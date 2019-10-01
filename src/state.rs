@@ -5,6 +5,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 #[derive(Debug)]
 pub struct State {
     pub array: Vec<f32>,
+    pub access: Vec<f32>,
 }
 
 #[derive(Debug, Clone)]
@@ -19,7 +20,9 @@ impl State {
             .collect();
 
         array.shuffle(&mut thread_rng());
-        Self { array }
+
+        let access = (0..size).map(|_| 0f32).collect();
+        Self { array, access }
     }
 }
 

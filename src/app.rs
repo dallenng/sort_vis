@@ -5,8 +5,9 @@ use ggez::{Context, GameError};
 use std::thread;
 use std::time::Duration;
 
-const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.0, 1.0);
-const RECTANGLE_COLOR: Color = Color::new(1.0, 0.0, 0.0, 1.0);
+const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.1, 1.0);
+const RECTANGLE_COLOR: Color = Color::new(1.0, 1.0, 1.0, 1.0);
+const ACCESS_RECTANGLE_COLOR: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 
 pub struct App {
     state: SharedState,
@@ -29,7 +30,7 @@ impl App {
             .unwrap();
 
         let rectangle = Rect::new_i32(0, 0, 1, 1);
-        let param = DrawParam::default();
+        let param = DrawParam::default().color(RECTANGLE_COLOR);
 
         Self {
             state,
@@ -42,6 +43,13 @@ impl App {
 
 impl ggez::event::EventHandler for App {
     fn update(&mut self, _ctx: &mut Context) -> Result<(), GameError> {
+        let mut state = self.state.get();
+        for val in &mut state.access {
+            *val -= 0.05;
+            if *val < 0.0 {
+                *val = 0.0;
+            }
+        }
         Ok(())
     }
 
@@ -58,17 +66,28 @@ impl ggez::event::EventHandler for App {
         let rect_width = window_width / len;
         let mesh =
             Mesh::new_rectangle(ctx, DrawMode::fill(), self.rectangle, RECTANGLE_COLOR).unwrap();
+        let access_mesh = Mesh::new_rectangle(
+            ctx,
+            DrawMode::fill(),
+            self.rectangle,
+            ACCESS_RECTANGLE_COLOR,
+        )
+        .unwrap();
 
         self.param.dest.x = 0.0;
         self.param.scale.x = rect_width;
 
-        for val in array {
+        for (i, val) in array.iter().enumerate() {
             let rect_height = *val * window_height;
             self.param.dest.y = window_height - rect_height;
             self.param.scale.y = rect_height;
 
             draw(ctx, &mesh, self.param).unwrap();
 
+            self.param.color.a = state.access[i];
+            draw(ctx, &access_mesh, self.param).unwrap();
+
+            self.param.color.a = 1.0;
             self.param.dest.x += rect_width;
         }
 

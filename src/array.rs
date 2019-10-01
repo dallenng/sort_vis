@@ -12,15 +12,27 @@ impl Array {
     }
 
     pub fn get(&self, index: usize) -> f32 {
+        self.0.get().access[index] = 1.0;
         self.0.get().array[index]
     }
 
     pub fn set(&self, index: usize, val: f32) {
+        self.0.get().access[index] = 1.0;
         self.0.get().array[index] = val;
+        self.wait(Duration::from_millis(15));
     }
 
     pub fn swap(&self, a: usize, b: usize) {
+        self.0.get().access[a] = 1.0;
+        self.0.get().access[b] = 1.0;
         self.0.get().array.swap(a, b);
+        self.wait(Duration::from_millis(30));
+    }
+
+    pub fn shuffle(&self) {
+        self.0.get().access.iter_mut().for_each(|val| *val = 1.0);
+        self.0.get().array.shuffle(&mut thread_rng());
+        self.wait(Duration::from_millis(100));
     }
 
     pub fn len(&self) -> usize {
@@ -36,10 +48,6 @@ impl Array {
             }
         }
         true
-    }
-
-    pub fn shuffle(&self) {
-        self.0.get().array.shuffle(&mut thread_rng())
     }
 
     pub fn wait(&self, duration: Duration) {
