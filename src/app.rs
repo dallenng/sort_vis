@@ -42,10 +42,11 @@ impl App {
 }
 
 impl ggez::event::EventHandler for App {
-    fn update(&mut self, _ctx: &mut Context) -> Result<(), GameError> {
+    fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
+        let delta = ggez::timer::delta(ctx).as_secs_f32();
         let mut state = self.state.get();
         for val in &mut state.access {
-            *val -= 0.05;
+            *val -= delta;
             if *val < 0.0 {
                 *val = 0.0;
             }
