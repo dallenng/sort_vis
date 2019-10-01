@@ -1,17 +1,18 @@
 use crate::array::Array;
 
 pub fn bubble_sort(array: Array) {
-    let mut len = array.len() - 1;
     let mut sorted = false;
 
-    while !sorted && len > 0 {
-        sorted = true;
-        for i in 0..len {
-            if array.get(i) > array.get(i + 1) {
-                array.swap(i, i + 1);
-                sorted = false;
-            };
+    for i in (1..array.len()).rev() {
+        if sorted {
+            break;
         }
-        len -= 1;
+        sorted = true;
+        for j in 0..i {
+            if array.get(j) > array.get(j + 1) {
+                array.swap(j, j + 1);
+                sorted = false;
+            }
+        }
     }
 }

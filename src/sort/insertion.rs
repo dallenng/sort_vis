@@ -1,17 +1,15 @@
 use crate::array::Array;
 
 pub fn insertion_sort(array: Array) {
-    let len = array.len() as i32;
+    for i in 1..array.len() {
+        let x = array.get(i);
 
-    let mut i = 1;
-    while i < len {
-        let x = array.get(i as usize);
         let mut j = i - 1;
-        while j >= 0 && array.get(j as usize) > x {
-            array.set((j + 1) as usize, array.get(j as usize));
+        while j < i && array.get(j) > x {
+            array.set(j + 1, array.get(j));
             j -= 1;
         }
-        array.set((j + 1) as usize, x);
-        i += 1;
+
+        array.set(j + 1, x);
     }
 }

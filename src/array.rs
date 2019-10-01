@@ -13,7 +13,9 @@ impl Array {
 
     pub fn get(&self, index: usize) -> f32 {
         self.0.get().access[index] = 1.0;
-        self.0.get().array[index]
+        let get = self.0.get().array[index];
+        self.wait(Duration::from_millis(5));
+        get
     }
 
     pub fn set(&self, index: usize, val: f32) {
