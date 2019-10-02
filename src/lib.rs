@@ -1,7 +1,7 @@
 use crate::app::App;
 use crate::array::Array;
 use crate::sort::all_sort_functions;
-use crate::sort::bubble::bubble_sort;
+use crate::sort::merge::merge_sort;
 use ggez::conf::WindowMode;
 use std::env::Args;
 
@@ -22,8 +22,8 @@ impl Config {
         let sort_function = match args.next() {
             Some(arg) => *all_sort_functions()
                 .get(arg.as_str())
-                .unwrap_or(&(bubble_sort as fn(Array))),
-            None => bubble_sort,
+                .unwrap_or(&(merge_sort as fn(Array))),
+            None => merge_sort,
         };
 
         let array_size = match args.next() {
