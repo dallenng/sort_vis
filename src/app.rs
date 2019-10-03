@@ -7,7 +7,6 @@ use std::time::Duration;
 
 const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.1, 1.0);
 const RECTANGLE_COLOR: Color = Color::new(1.0, 1.0, 1.0, 1.0);
-const ACCESS_RECTANGLE_COLOR: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 
 pub struct App {
     state: SharedState,
@@ -67,13 +66,6 @@ impl ggez::event::EventHandler for App {
         let rect_width = window_width / len;
         let mesh =
             Mesh::new_rectangle(ctx, DrawMode::fill(), self.rectangle, RECTANGLE_COLOR).unwrap();
-        let access_mesh = Mesh::new_rectangle(
-            ctx,
-            DrawMode::fill(),
-            self.rectangle,
-            ACCESS_RECTANGLE_COLOR,
-        )
-        .unwrap();
 
         self.param.dest.x = 0.0;
         self.param.scale.x = rect_width;
@@ -85,10 +77,13 @@ impl ggez::event::EventHandler for App {
 
             draw(ctx, &mesh, self.param).unwrap();
 
+            self.param.color.r = 1.2 - (i as f32 / len);
+            self.param.color.g = 0.2;
+            self.param.color.b = 0.2 + (i as f32 / len);
             self.param.color.a = state.access[i];
-            draw(ctx, &access_mesh, self.param).unwrap();
+            draw(ctx, &mesh, self.param).unwrap();
 
-            self.param.color.a = 1.0;
+            self.param.color = RECTANGLE_COLOR;
             self.param.dest.x += rect_width;
         }
 
