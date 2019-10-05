@@ -53,6 +53,7 @@ impl Array {
     }
 
     pub fn wait(&self, duration: Duration) {
-        thread::sleep(duration);
+        let wait_factor = self.0.get().wait_factor;
+        thread::sleep(duration.mul_f32(wait_factor));
     }
 }

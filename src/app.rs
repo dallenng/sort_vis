@@ -1,6 +1,8 @@
 use crate::array::Array;
 use crate::state::{SharedState, State};
+use ggez::event::{quit, KeyMods};
 use ggez::graphics::{Color, DrawParam, Rect};
+use ggez::input::keyboard::KeyCode;
 use ggez::{Context, GameError};
 use std::thread;
 use std::time::Duration;
@@ -42,13 +44,10 @@ impl App {
 
 impl ggez::event::EventHandler for App {
     fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        let delta = ggez::timer::delta(ctx).as_secs_f32();
+        let delta = ggez::timer::delta(ctx).as_secs_f32() / 2.0;
         let mut state = self.state.get();
         for val in &mut state.access {
-            *val -= delta;
-            if *val < 0.0 {
-                *val = 0.0;
-            }
+            *val = if *val > delta { *val - delta } else { 0.0 };
         }
         Ok(())
     }
@@ -88,6 +87,33 @@ impl ggez::event::EventHandler for App {
         }
 
         present(ctx)
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        _repeat: bool,
+    ) {
+        match keycode {
+            KeyCode::Escape => quit(ctx),
+            KeyCode::Add => {
+                self.state.get().wait_factor = if self.state.get().wait_factor > 2.0 {
+                    self.state.get().wait_factor * 0.5
+                } else {
+                    1.0
+                }
+            }
+            KeyCode::Subtract => {
+                self.state.get().wait_factor = if self.state.get().wait_factor < 5.0 {
+                    self.state.get().wait_factor * 2.0
+                } else {
+                    10.0
+                }
+            }
+            _ => {}
+        }
     }
 
     fn resize_event(&mut self, ctx: &mut Context, width: f32, height: f32) {
