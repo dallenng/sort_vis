@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::array::Array;
 use crate::sort::bogo::bogo_sort;
 use crate::sort::bubble::bubble_sort;
@@ -5,7 +7,6 @@ use crate::sort::heap::heap_sort;
 use crate::sort::insertion::insertion_sort;
 use crate::sort::merge::{in_place_merge_sort, merge_sort};
 use crate::sort::selection::selection_sort;
-use std::collections::HashMap;
 
 pub mod bogo;
 pub mod bubble;

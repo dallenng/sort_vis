@@ -1,11 +1,13 @@
-use crate::array::Array;
-use crate::state::{SharedState, State};
+use std::thread;
+use std::time::Duration;
+
 use ggez::event::{quit, KeyMods};
 use ggez::graphics::{Color, DrawParam, Rect};
 use ggez::input::keyboard::KeyCode;
 use ggez::{Context, GameError};
-use std::thread;
-use std::time::Duration;
+
+use crate::array::Array;
+use crate::state::{SharedState, State};
 
 const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.1, 1.0);
 const RECTANGLE_COLOR: Color = Color::new(1.0, 1.0, 1.0, 1.0);

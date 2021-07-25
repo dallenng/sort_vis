@@ -1,6 +1,7 @@
+use std::sync::{Arc, Mutex, MutexGuard};
+
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use std::sync::{Arc, Mutex, MutexGuard};
 
 #[derive(Debug)]
 pub struct State {

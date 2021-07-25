@@ -1,8 +1,10 @@
-use crate::state::SharedState;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 use std::thread;
 use std::time::Duration;
+
+use rand::seq::SliceRandom;
+use rand::thread_rng;
+
+use crate::state::SharedState;
 
 pub struct Array(SharedState);
 

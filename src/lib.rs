@@ -1,9 +1,11 @@
+use std::env::Args;
+
+use ggez::conf::WindowMode;
+
 use crate::app::App;
 use crate::array::Array;
 use crate::sort::all_sort_functions;
 use crate::sort::merge::merge_sort;
-use ggez::conf::WindowMode;
-use std::env::Args;
 
 mod app;
 mod array;
