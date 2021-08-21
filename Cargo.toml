@@ -6,5 +6,6 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-ggez = "0.5"
-rand = "0.7"
+flume = "0.10"
+nannou = "0.17"
+threadpool = "1"

@@ -1,124 +1,92 @@
-use std::thread;
 use std::time::Duration;
 
-use ggez::event::{quit, KeyMods};
-use ggez::graphics::{Color, DrawParam, Rect};
-use ggez::input::keyboard::KeyCode;
-use ggez::{Context, GameError};
+use nannou::color::Rgba;
+use nannou::event::{Update, WindowEvent};
+use nannou::winit::event::VirtualKeyCode;
+use nannou::{App, Event, Frame};
 
-use crate::array::Array;
-use crate::state::{SharedState, State};
+use crate::app::array::Array;
+use crate::app::sort::bubble::Bubble;
+use crate::app::sort::shuffle::Shuffle;
 
-const CLEAR_COLOR: Color = Color::new(0.0, 0.0, 0.1, 1.0);
-const RECTANGLE_COLOR: Color = Color::new(1.0, 1.0, 1.0, 1.0);
+mod array;
+mod message;
+mod sort;
 
-pub struct App {
-    state: SharedState,
-    rectangle: Rect,
-    param: DrawParam,
-    sort_thread: thread::JoinHandle<()>,
+pub fn run() {
+    nannou::app(Model::new).event(event).run();
 }
 
-impl App {
-    pub fn new(sort: fn(Array), size: usize) -> Self {
-        let state = SharedState::new(State::new(size));
-        let sort_state = state.clone();
-        let sort_thread = thread::Builder::new()
-            .name(String::from("sort"))
-            .spawn(move || {
-                let array = Array::new(sort_state);
-                array.wait(Duration::from_secs(1));
-                sort(array);
-            })
+#[derive(Debug, Clone)]
+struct Model {
+    array: Array,
+    active: bool,
+    speed: u8,
+}
+
+impl Model {
+    fn new(app: &App) -> Self {
+        app.new_window()
+            .title("Sort Visualizer")
+            .maximized(true)
+            .view(view)
+            .build()
             .unwrap();
 
-        let rectangle = Rect::new_i32(0, 0, 1, 1);
-        let param = DrawParam::default().color(RECTANGLE_COLOR);
+        let mut array = Array::new(100);
+
+        array.sort(Shuffle);
 
         Self {
-            state,
-            sort_thread,
-            rectangle,
-            param,
+            array,
+            active: false,
+            speed: 1,
         }
     }
 }
 
-impl ggez::event::EventHandler for App {
-    fn update(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        let delta = ggez::timer::delta(ctx).as_secs_f32() / 2.0;
-        let mut state = self.state.get();
-        for val in &mut state.access {
-            *val = if *val > delta { *val - delta } else { 0.0 };
-        }
-        Ok(())
+fn event(app: &App, model: &mut Model, event: Event) {
+    match event {
+        Event::WindowEvent {
+            simple: Some(event),
+            ..
+        } => window_event(app, model, &event),
+        Event::Update(up) => update(app, model, &up),
+        _ => (),
     }
+}
 
-    fn draw(&mut self, ctx: &mut Context) -> Result<(), GameError> {
-        use ggez::graphics::*;
-        clear(ctx, CLEAR_COLOR);
-
-        let (window_width, window_height) = drawable_size(ctx);
-
-        let state = self.state.get();
-        let array = &state.array;
-        let len = array.len() as f32;
-
-        let rect_width = window_width / len;
-        let mesh =
-            Mesh::new_rectangle(ctx, DrawMode::fill(), self.rectangle, RECTANGLE_COLOR).unwrap();
-
-        self.param.dest.x = 0.0;
-        self.param.scale.x = rect_width;
-
-        for (i, val) in array.iter().enumerate() {
-            let rect_height = *val * window_height;
-            self.param.dest.y = window_height - rect_height;
-            self.param.scale.y = rect_height;
-
-            draw(ctx, &mesh, self.param).unwrap();
-
-            self.param.color.r = 1.2 - (i as f32 / len);
-            self.param.color.g = 0.2;
-            self.param.color.b = 0.2 + (i as f32 / len);
-            self.param.color.a = state.access[i];
-            draw(ctx, &mesh, self.param).unwrap();
-
-            self.param.color = RECTANGLE_COLOR;
-            self.param.dest.x += rect_width;
-        }
-
-        present(ctx)
-    }
-
-    fn key_down_event(
-        &mut self,
-        ctx: &mut Context,
-        keycode: KeyCode,
-        _keymods: KeyMods,
-        _repeat: bool,
-    ) {
-        match keycode {
-            KeyCode::Escape => quit(ctx),
-            KeyCode::Add => {
-                self.state.get().wait_factor = if self.state.get().wait_factor > 2.0 {
-                    self.state.get().wait_factor * 0.5
-                } else {
-                    1.0
-                }
+fn window_event(_app: &App, model: &mut Model, event: &WindowEvent) {
+    match event {
+        WindowEvent::KeyPressed(_) => {}
+        WindowEvent::KeyReleased(key) => match key {
+            VirtualKeyCode::P => model.active = !model.active,
+            VirtualKeyCode::Plus | VirtualKeyCode::NumpadAdd => {
+                model.speed = model.speed.saturating_add(1);
             }
-            KeyCode::Subtract => {
-                self.state.get().wait_factor = if self.state.get().wait_factor < 5.0 {
-                    self.state.get().wait_factor * 2.0
-                } else {
-                    10.0
-                }
+            VirtualKeyCode::Minus | VirtualKeyCode::NumpadSubtract => {
+                model.speed = model.speed.saturating_sub(1);
             }
-            _ => {}
-        }
+            VirtualKeyCode::S => model.array.sort(Bubble),
+            VirtualKeyCode::Return => {}
+            VirtualKeyCode::Space => model.array.update(1, Duration::from_millis(100)),
+            _ => (),
+        },
+        _ => (),
     }
+}
 
-    fn resize_event(&mut self, ctx: &mut Context, width: f32, height: f32) {
-        ggez::graphics::set_screen_coordinates(ctx, [0.0, 0.0, width, height].into()).unwrap();
+fn update(_app: &App, model: &mut Model, update: &Update) {
+    if model.active {
+        model.array.update(model.speed, update.since_last);
     }
+}
+
+fn view(app: &App, model: &Model, frame: Frame) {
+    let draw = app.draw();
+    draw.background().color(Rgba::new(0.0, 0.0, 0.1, 1.0));
+
+    model.array.view(&draw, app.window_rect());
+
+    draw.to_frame(app, &frame).unwrap();
 }
