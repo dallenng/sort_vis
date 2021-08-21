@@ -27,7 +27,7 @@ struct Model {
 impl Model {
     fn new(app: &App) -> Self {
         app.new_window()
-            .title("Sort Visualizer")
+            .title("Sort Vis")
             .maximized(true)
             .view(view)
             .build()

@@ -1,34 +1,32 @@
 # Sort Vis
 
-Sort Vis is a sort visualizer written in Rust with [ggez](https://ggez.rs/) (a lightweight 2D game engine).
+Sort Vis is a sort visualizer written in Rust with [nannou](https://nannou.cc).
 
 ## Installation
 
-1. Make sure you have installed the dependencies:
+### Requirements
 
-- git
-- rustc
-- cargo
+- [cargo](https://www.rust-lang.org/learn/get-started)
 
-2. Clone the source with git:
+To build the executable :
 
-```sh
-git clone https://github.com/dallenng/sort_vis
-cd sort_vis
-```
-
-3. Build
-
-```sh
+```shell
 cargo build --release
 ```
-The executable will be in target/release.
+
+The executable will be in `target/release/sort_vis`
 
 ## Usage
 
-```sh
-target/release/sort_vis [algorithm] [array_size]
+To run the program :
+
+```shell
+target/release/sort_vis
 ```
 
 ## License
-MIT, Apache 2.0
+
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this repo by you, as
+defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
