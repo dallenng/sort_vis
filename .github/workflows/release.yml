@@ -2,13 +2,13 @@ name: Release
 
 on:
   push:
-    tags: [ "**" ]
+    tags: [ "v*.*.*" ]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  release:
+  build:
     strategy:
       matrix:
         include:
@@ -35,3 +35,16 @@ jobs:
         with:
           name: sort_vis_${{ matrix.name_suffix }}
           path: target/release/sort_vis${{ matrix.path_suffix }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v3
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            sort_vis_linux/sort_vis
+            sort_vis_macos/sort_vis
+            sort_vis_windows/sort_vis.exe
