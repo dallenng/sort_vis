@@ -17,4 +17,6 @@ jobs:
         with:
           rust-version: stable
       - uses: Swatinem/rust-cache@v2
-      - run: scripts/dependencies.sh
+      - run: |
+          cargo install cargo-outdated
+          cargo outdated --exit-code 1

@@ -42,9 +42,20 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
+        with:
+          name: sort_vis_linux
+          path: sort_vis_linux
+      - uses: actions/download-artifact@v3
+        with:
+          name: sort_vis_macos
+          path: sort_vis_macos
+      - uses: actions/download-artifact@v3
+        with:
+          name: sort_vis_windows
+          path: sort_vis_windows.exe
       - uses: softprops/action-gh-release@v1
         with:
           files: |
             sort_vis_linux
             sort_vis_macos
-            sort_vis_windows
+            sort_vis_windows.exe
