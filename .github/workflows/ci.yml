@@ -20,4 +20,4 @@ jobs:
           rust-version: nightly
           components: rustfmt,clippy
       - uses: Swatinem/rust-cache@v2
-      - run: ci.sh
+      - run: ./ci.sh
