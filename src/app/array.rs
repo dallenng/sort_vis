@@ -64,8 +64,7 @@ impl Array {
         self.receiver.replace(receiver);
 
         let mut controller = ArrayController::new(self.inner.clone(), sender);
-        self.sort_threads
-            .execute(move || algorithm.sort(&mut controller));
+        self.sort_threads.execute(move || algorithm.sort(&mut controller));
     }
 }
 
