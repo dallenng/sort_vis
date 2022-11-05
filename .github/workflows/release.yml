@@ -45,6 +45,6 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            sort_vis_linux/sort_vis
-            sort_vis_macos/sort_vis
-            sort_vis_windows/sort_vis.exe
+            sort_vis_linux
+            sort_vis_macos
+            sort_vis_windows
