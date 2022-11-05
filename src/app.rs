@@ -26,31 +26,19 @@ struct Model {
 
 impl Model {
     fn new(app: &App) -> Self {
-        app.new_window()
-            .title("Sort Vis")
-            .maximized(true)
-            .view(view)
-            .build()
-            .unwrap();
+        app.new_window().title("Sort Vis").maximized(true).view(view).build().unwrap();
 
         let mut array = Array::new(100);
 
         array.sort(Shuffle);
 
-        Self {
-            array,
-            active: false,
-            speed: 1,
-        }
+        Self { array, active: false, speed: 1 }
     }
 }
 
 fn event(app: &App, model: &mut Model, event: Event) {
     match event {
-        Event::WindowEvent {
-            simple: Some(event),
-            ..
-        } => window_event(app, model, &event),
+        Event::WindowEvent { simple: Some(event), .. } => window_event(app, model, &event),
         Event::Update(up) => update(app, model, &up),
         _ => (),
     }

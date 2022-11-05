@@ -12,19 +12,14 @@ impl Array {
         for (&n, &access) in self.inner.iter().zip(&self.access) {
             let n = f32::from(n);
 
-            let rect = Rect::from_w_h(w, h_factor * n)
-                .bottom_left_of(window_rect)
-                .shift_x(x);
+            let rect = Rect::from_w_h(w, h_factor * n).bottom_left_of(window_rect).shift_x(x);
             draw.rect().xy(rect.xy()).wh(rect.wh()).color(Rgba::new(
                 (n / self.len).clamp(0.2, 1.0),
                 0.2,
                 0.9,
                 1.0,
             ));
-            draw.rect()
-                .xy(rect.xy())
-                .wh(rect.wh())
-                .color(Rgba::new(access, access, access, 0.5));
+            draw.rect().xy(rect.xy()).wh(rect.wh()).color(Rgba::new(access, access, access, 0.5));
 
             x += w;
         }

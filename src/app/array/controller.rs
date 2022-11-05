@@ -17,20 +17,14 @@ impl ArrayController {
     pub fn new(array: Vec<u8>, sender: Sender<Message>) -> Self {
         let last_mut = (0, AtomicU8::new(array[0]));
 
-        Self {
-            array,
-            sender,
-            last_mut,
-        }
+        Self { array, sender, last_mut }
     }
 
     fn send_set_if_last_mut_changed(&self) {
         let last_mut_value = self.array[self.last_mut.0];
 
         if last_mut_value != self.last_mut.1.swap(last_mut_value, Ordering::Relaxed) {
-            self.sender
-                .send(Message::set(self.last_mut.0, last_mut_value))
-                .unwrap();
+            self.sender.send(Message::set(self.last_mut.0, last_mut_value)).unwrap();
         }
     }
 }
