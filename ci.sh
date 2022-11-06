@@ -1,8 +1,6 @@
-set -e
+#!/usr/bin/env bash
 
-if [ -v CI ]; then
-  cargo install cargo-sort
-fi
+set -e
 
 cargo fmt --check
 cargo sort --check
