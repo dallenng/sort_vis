@@ -2,9 +2,12 @@
 
 set -e
 
+if [ -v CI ]; then
+  cargo install cargo-sort
+fi
+
 cargo fmt --check
-cargo install cargo-sort
-cargo sort -c --check-format
+cargo sort --check
 
 cargo build --all-targets --all-features
 cargo clippy --all-targets --all-features -- -D warnings
