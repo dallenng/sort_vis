@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 set -e
 
 if [ -v CI ]; then
