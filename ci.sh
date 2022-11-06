@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -v CI ]]; then
+if [ -v CI ]; then
   cargo install cargo-sort
 fi
 
