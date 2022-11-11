@@ -10,6 +10,20 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  fmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: nightly
+          components: rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: |
+          ci/fmt_install.sh
+          ci/fmt.sh
+
   check:
     strategy:
       matrix:
@@ -22,9 +36,7 @@ jobs:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: nightly
-          components: rustfmt,clippy
+          components: clippy
       - uses: Swatinem/rust-cache@v2
-      - run: |
-          cargo install cargo-sort
-          ./ci.sh
+      - run: ci/check.sh
         shell: bash
