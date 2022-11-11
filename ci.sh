@@ -3,7 +3,7 @@
 set -e
 
 cargo fmt --check
-cargo sort --check
+cargo sort --print
 
 cargo build --all-targets --all-features
 cargo clippy --all-targets --all-features -- -D warnings
