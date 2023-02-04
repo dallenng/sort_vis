@@ -3,6 +3,7 @@ name: Release
 on:
   push:
     tags: [ "v*.*.*" ]
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -29,11 +30,15 @@ jobs:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: stable
-      - run: cargo build --release
-      - uses: actions/upload-artifact@v3
+
+      - name: Build executable
+        run: cargo build --profile dist
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v3
         with:
           name: sort_vis_${{ matrix.name_suffix }}
-          path: target/release/sort_vis${{ matrix.path_suffix }}
+          path: target/dist/sort_vis${{ matrix.path_suffix }}
 
   release:
     needs: build
@@ -41,11 +46,14 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
-      - run: |
+      - name: Create archive for all executables
+        run: |
           zstdmt -10 sort_vis_linux/sort_vis -o sort_vis_linux.zst
           zstdmt -10 sort_vis_macos/sort_vis -o sort_vis_macos.zst
           zip sort_vis_windows.zip sort_vis_windows/sort_vis.exe
-      - uses: softprops/action-gh-release@v1
+
+      - name: Create a release with all executables
+        uses: softprops/action-gh-release@v1
         with:
           files: |
             sort_vis_linux.zst

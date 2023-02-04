@@ -9,3 +9,8 @@ license = "MIT OR Apache-2.0"
 flume = "0.10.14"
 nannou = "0.18.1"
 threadpool = "1.8.1"
+
+[profile.dist]
+inherits = "release"
+lto = true
+codegen-units = 1

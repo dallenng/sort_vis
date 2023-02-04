@@ -2,4 +2,4 @@
 
 set -e
 
-cargo install cargo-sort
+cargo outdated --exit-code 1
