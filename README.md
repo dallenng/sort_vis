@@ -7,6 +7,7 @@ Sort Vis is a sort visualizer written in Rust with [nannou](https://nannou.cc).
 ### Requirements
 
 - [cargo](https://www.rust-lang.org/learn/get-started)
+- See [here](https://www.guide.nannou.cc/getting_started/platform-specific_setup.html) for platform specific setup
 
 To build the executable :
 

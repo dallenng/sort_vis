@@ -1,8 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-set -e
+set -ex
 
-cargo build --all-targets --all-features
 cargo clippy --all-targets --all-features -- -D warnings
-cargo clippy --all-targets --all-features -- -W clippy::pedantic
 cargo test --all-targets --all-features

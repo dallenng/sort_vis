@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-set -e
+set -ex
 
 cargo outdated --exit-code 1
