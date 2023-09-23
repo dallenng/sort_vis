@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-set -e
+set -ex
 
 cargo fmt --check
 cargo sort --check --check-format
